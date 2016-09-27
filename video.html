@@ -16,13 +16,52 @@ video { max-width: 100%; }
 		</style>
 	</head>
 	<body>
-		<video controls>
-			<source id="s">
+		<video id="v" controls>
 		</video>
+		<br />
+		<input id="f" type="text" placeholder="Paste File Path" />
+		<input id="g" type="button" value="GO" />
+		<input id="c" type="button" value=" X " />
 		<script>
 (function() {
-	document.getElementById("t").innerHTML = window.location.hash.substring(1).replace(/^.*[\\\/]/, '');
-	document.getElementById("s").src = window.location.hash.substring(1);
+	// cache our elements
+	var t = document.getElementById("t"),
+		v = document.getElementById("v"),
+		f = document.getElementById("f"),
+		g = document.getElementById("g"),
+		c = document.getElementById("c");
+
+	// handle when the input changes
+	g.onclick = function() {
+		// set the html page title
+		// create new source and play it fullscreen
+		setSource(f.value);
+		v.play();
+		v.webkitRequestFullscreen();
+	};
+
+	// handle the clear button
+	c.onclick = function() {
+		f.value = "";
+		setSource();
+		v.load();
+	};
+
+	// get rid of old sources, create a new one, and append it
+	function setSource(src) {
+		src = src || "";
+		// set the html page title
+		t.innerHTML = src.replace(/^.*[\\\/]/, '');
+		// out with the old
+		while(v.firstChild)
+			v.removeChild(v.firstChild);
+		// in with the new (maybe)
+		if(src.length > 0) {
+			var source = document.createElement('source');
+			source.setAttribute('src', src);
+			v.appendChild(source);
+		}
+	}
 } )();
 		</script>
 	</body>
